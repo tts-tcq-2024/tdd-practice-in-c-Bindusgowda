@@ -1,173 +1,67 @@
 #include <stdlib.h>
 #include <string.h>
-#include <cctype>
-#include <iostream>
-#include "StringCalculator.h"
+#include <stdio.h>
 
-#ifndef STRING_CALCULATOR_H
-#define STRING_CALCULATOR_H
-
-int calculateStringSum(const char *inputString);
-
-#endif
-
-/* Function Prototypes */
-void replaceNewLineDelimiterWithCommaDelimiter(char *tempInputString);
-int addNumbersFromInputString(char *inputString);
-void removeNonDigitCharactersFromToken(char *token);
-void deleteCharFromStringByIndex(char *inputString, int charIndex);
-void removeNumbersGreaterThanThousand(char *token);
-void checkAndReplaceCustomDelimiterWithCommaDelimiter(char *inputString);
-void replaceCustomDelimiterWithCommaDelimiter(char *inputString, char* customDelimiter);
-void checkForNegativeNumbersInInputString(char *inputString);
-void throwExceptionForNegativeNumber(char *listOfNegativeNumbers);
-int isCustomDelimiterFormatStarterPresent(char *inputString);
-int isCustomDelimiterFormatEnderPresent(char *inputString);
-
-void throwExceptionForNegativeNumber(char *listOfNegativeNumbers) {
-  if(strlen(listOfNegativeNumbers) != 0) {
-    char errorMessage[strlen(listOfNegativeNumbers) + 35];
-    strcpy(errorMessage,"negative numbers not allowed: ");
-    strcat(errorMessage, listOfNegativeNumbers);
-    errorMessage[strlen(errorMessage)-1] = '\0';
-    throw std::runtime_error(errorMessage);
-  }
+// function to convert a string to an integer
+static int stringToInteger(const char* str) {
+    return atoi(str);
 }
 
-void checkForNegativeNumbersInInputString(char *inputString) {
-  char tempInputString[strlen(inputString)];
-  strcpy(tempInputString,inputString);
-  char listOfNegativeNumbers[strlen(inputString)];
-  strcpy(listOfNegativeNumbers,"");
-  char* token = strtok(tempInputString,",");
-  while (token != NULL) {
-    if(atoi(token) < 0) {
-      strcat(listOfNegativeNumbers,token);
-      strcat(listOfNegativeNumbers,",");
+// function to check if the number is <= 1000
+static int isValidNumber(int number) {
+    return (number <= 1000) ? number : 0;
+}
+
+// function to accumulate negative numbers in a buffer
+static void accumulateNegatives(int number, char* negatives) {
+    if (number < 0) {
+        snprintf(negatives + strlen(negatives), 256 - strlen(negatives), "%d ", number);
     }
-    token = strtok(NULL,",");
-  }
-  throwExceptionForNegativeNumber(listOfNegativeNumbers);
 }
 
-int calculateStringSum(const char *inputString) {
-  int stringSum = 0;
-  char* customDelimiter;
-  char tempInputString[strlen(inputString)];
-  strcpy(tempInputString, inputString);
-
-  if(strlen(inputString) != 0) {
-    checkAndReplaceCustomDelimiterWithCommaDelimiter(tempInputString);
-    replaceNewLineDelimiterWithCommaDelimiter(tempInputString);
-    checkForNegativeNumbersInInputString(tempInputString);
-    stringSum = addNumbersFromInputString(tempInputString);
-  }
-
-  return stringSum;
-}
-
-int addNumbersFromInputString(char *inputString) {
-  int stringSum = 0;
-  char* token = strtok(inputString,",");
-  
-  while (token != NULL) {
-    removeNonDigitCharactersFromToken(token);
-    removeNumbersGreaterThanThousand(token);
-    stringSum += atoi(token);
-    token = strtok(NULL,",");
-  }
-
-  return stringSum;
-}
-
-/* Function Description: delete the character at the given index from the given string */
-/* Parameters:
-      inputString - string from which a character is to be deleted
-      charIndex - index of the character which is to be deleted
-*/
-void deleteCharFromStringByIndex(char *inputString, int charIndex) {        
-    int len = strlen(inputString); /* len - length of the input string */
-    int i;
-    for(i = charIndex; i < len-1; ++i) {
-        inputString[i] = inputString[i+1];
+// function to sum numbers from the input
+static int sumNumbers(const char* input, const char* delimiters, char* negatives) {
+    int sum = 0;
+    char* inputCopy = strdup(input);  
+    char* token = strtok(inputCopy, delimiters);
+    while (token != NULL) {
+        int number = stringToInteger(token); 
+        accumulateNegatives(number, negatives); 
+        sum += isValidNumber(number); 
+        token = strtok(NULL, delimiters); 
     }
-    inputString[i] = '\0';
-}
-
-void removeNumbersGreaterThanThousand(char *token) {
-  if(atoi(token) > 1000) {
-    strcpy(token,"0");
-  }
-}
-
-void removeNonDigitCharactersFromToken(char *token) {
-  int i = 0;
-  while(token[i] != '\0') {
-    if(!isdigit(token[i])) {
-      deleteCharFromStringByIndex(token,i);
-    } else {
-        ++i;
+    free(inputCopy);
+    
+    // If any negatives were found, format the message and give an exception
+    if (strlen(negatives) > 0) {
+        negatives[strlen(negatives) - 1] = '\0';
+        fprintf(stderr, "Negatives not allowed\n", negatives);
+        exit(EXIT_FAILURE); 
     }
-  }
+    return sum;
 }
 
-int isCustomDelimiterFormatStarterPresent(char *inputString) {
-    return (((inputString[0] - '/') + (inputString[1] - '/')) == 0);
-}
-
-int isCustomDelimiterFormatEnderPresent(char *inputString) {
-    return (strstr(inputString+2,"\n") != NULL);
-}
-
-void checkAndReplaceCustomDelimiterWithCommaDelimiter(char *inputString) {
-  if((isCustomDelimiterFormatStarterPresent(inputString) + isCustomDelimiterFormatEnderPresent(inputString)) == 2) {
-    char tempInputString[strlen(inputString)];
-    strcpy(tempInputString,inputString);
-    
-    char* customDelimiter = strtok(tempInputString+2,"\n");    
-    char* contentOfInputString = inputString + 2 + strlen(customDelimiter) + 1;
-    
-    replaceCustomDelimiterWithCommaDelimiter(contentOfInputString, customDelimiter);    
-    strcpy(inputString,contentOfInputString);
-  }
-}
-
-void replaceCustomDelimiterWithCommaDelimiter(char *inputString, char* customDelimiter) {
-  int lenInputString = strlen(inputString);
-  char tempString[lenInputString];
-  char tempString2[lenInputString];
-  int lenCustomDelimiter = strlen(customDelimiter);
-  
-  /* set initial values for the temporary strings */
-  strcpy(tempString2,"");
-  strcpy(tempString,inputString);
-  char* token = strstr(tempString,customDelimiter);
-    
-  while(token != NULL) {
-    /* copy the characters that occur before the custom delimiter */
-    strncpy(tempString2,tempString,(token-tempString));    
-    tempString2[(token-tempString)] = '\0';
-
-    /* add the comma delimiter */
-    strcat(tempString2,",");
-    
-    /* add the rest of the string after the custom delimiter */
-    strcat(tempString2, (token+lenCustomDelimiter));
-    
-    /* prepare for next iteration of the while loop */
-    strcpy(tempString,tempString2);    
-    token = strstr(tempString,customDelimiter);    
-    strcpy(tempString2,"");
-  }
-
-  /* finally copy the modified string into the input string */
-  strcpy(inputString,tempString);
-}
-
-void replaceNewLineDelimiterWithCommaDelimiter(char *inputString) {
-  for(int i = 0; inputString[i] != '\0'; ++i) {
-    if(inputString[i] == '\n') {
-      inputString[i] = ',';
+// function to detect and handle custom delimiters
+static const char* extractCustomDelimiter(const char* input, char* delimiters) {
+    if (input[0] == '/' && input[1] == '/') {
+        // Custom delimiter found, get the delimiter character after "//" and before "\n"
+        delimiters[0] = input[2];  
+        delimiters[1] = '\n';     
+        delimiters[2] = '\0';    
+        return strchr(input, '\n') + 1; 
     }
-  }
+    // If no custom delimiter is found, use comma and newline as default
+    strcpy(delimiters, ",\n");
+    return input; 
+}
+
+static int add(const char* input) {
+    // If input is NULL or an empty string, return 0
+    if (input == NULL || *input == '\0') {
+        return 0;
+    }
+    char delimiters[3];  
+    char negatives[256] = {0};  
+    const char* numbersPart = extractCustomDelimiter(input, delimiters);
+    return sumNumbers(numbersPart, delimiters, negatives);
 }
