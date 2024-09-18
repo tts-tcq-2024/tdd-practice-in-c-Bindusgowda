@@ -1,0 +1,36 @@
+Test Cases:
+
+1. Test Case Name: ExpectZeroForStringOnlyInput
+Scenario: 	If there are no numbers in the input string, then the returned sum is 0 as there is nothing to add up
+Steps:
+Given "Hello, world!" as input, then "0" is expected.
+
+2. Test Case Name: ExpectZeroForEmptyInput
+Scenario: If the given input string is empty the sum is returned as 0
+Steps:
+Given " " as input, then "0" is expected.
+
+3. Test Case Name: ExpectZeroForSingleZero
+Scenario: If the given input string is a single 0, the returned sum is 0
+Steps:
+Given "0" as input, then "0" is expected.
+
+4. Test Case Name: ExpectSumForTwoNumbers
+Scenario: If the given input string is a list of numbers separated by commas, the numbers are added up and the sum is returned
+Steps:
+Given "1,2" as input, then "3" is expected.
+
+5. Test Case Name: ExpectSumWithNewlineDelimiter
+Scenario: 	If the given input string is a list of numbers separated by new line characters, the numbers are added up and the sum is returned
+Steps:
+Given "1\n2,3" as input, then "6" is expected.
+
+6. Test Case Name: IgnoreNumbersGreaterThan1000
+Scenario: If the given input consists of numbers greater than thousand then 1 is returned. 
+Steps:
+Given "1,1001" as input, then "1" is expected.
+
+7. Test Case Name: ExpectSumWithCustomDelimiter
+Scenario: If the given input consists of delimiters the numbers are added up and the sum is returned
+Steps:
+Given "//;\n1;2" as input, then "3" is expected.
