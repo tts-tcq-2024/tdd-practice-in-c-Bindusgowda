@@ -29,3 +29,8 @@ Given "Hello, world!" as input, then "0" is expected.
 Scenario: If the given input consists of characters that are neither numbers not delimiters (e.g., spaces), they are ignored
 Steps:
 Given "1, 2*1" as input, then "22" is expected.
+
+7. Test Case Name: IgnoreNumbersGreaterThanThousand
+Scenario: If the given input consists of numbers greater than thousand then 1 is returned. 
+Steps:
+Given "1,1001" as input, then "1" is expected.
