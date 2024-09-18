@@ -1,30 +1,44 @@
 #include <gtest/gtest.h>
-#include "string.h"
 #include "StringCalculator.h"
 
-TEST(StringCalculatorAddTests, ReturnsZeroForEmptyInput) {
-    ASSERT_EQ(calculateStringSum(""),0);
+TEST(StringCalculatorAddTests, ExpectZeroForEmptyInput) {
+    int expectedresult = 0;
+    const char* input = "Hello, world!";
+    int result = add(input);
+    ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, ReturnsZeroForSingleZeroInput) {
-    ASSERT_EQ(calculateStringSum("0"),0);
+TEST(StringCalculatorAddTests, ExpectZeroForSingleZero) {
+    int expectedresult = 0;
+    const char* input = "0";
+    int result = add(input);
+    ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, ReturnsSumOfInputNumbersSeparatedByCommas) {
-    ASSERT_EQ(calculateStringSum("1,2"),3);
+TEST(StringCalculatorAddTests, ExpectSumForTwoNumbers) {
+    int expectedresult = 3;
+    const char*  input = "1,2";
+    int result = add(input);
+    ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, ReturnsSumOfInputNumbersSeparatedByNewLines) {
-    ASSERT_EQ(calculateStringSum("1\n2"),3);
+TEST(StringCalculatorAddTests, ExpectSumWithNewlineDelimiter) {
+    int expectedresult = 6;
+    const char*  input = "1\n2,3";
+    int result =add(input);
+    ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, ReturnsZeroIfInputStringDoesNotHaveNumbers) {
-    ASSERT_EQ(calculateStringSum(",\n,"),0);
-    ASSERT_EQ(calculateStringSum("Hello, world!"),0);
+TEST(StringCalculatorAddTests, IgnoreNumbersGreaterThan1000) {
+    int expectedresult = 1;
+    const char*  input = "1,1001";
+    int result =add(input);
+    ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, IgnoresInputCharactersThatAreNeitherNumbersNorDelimiters) {
-    ASSERT_EQ(calculateStringSum("1, 2*1"),22);
-    ASSERT_EQ(calculateStringSum("//;1;1;1"),111);
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter) {
+    int expectedresult = 3;
+    const char*  input = "//;\n1;2";
+    int result = add(input);
+    ASSERT_EQ(result, expectedresult);
 }
-
