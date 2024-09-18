@@ -23,6 +23,11 @@ TEST(StringCalculatorAddTests, ReturnsZeroIfInputStringDoesNotHaveNumbers) {
     ASSERT_EQ(calculateStringSum("Hello, world!"),0);
 }
 
+TEST(StringCalculatorAddTests, IgnoresInputCharactersThatAreNeitherNumbersNorDelimiters) {
+    ASSERT_EQ(calculateStringSum("1, 2*1"),22);
+    ASSERT_EQ(calculateStringSum("//;1;1;1"),111);
+}
+
 TEST(StringCalculatorAddTests, ThrowsExceptionForNegativeInputNumbers) {
     ASSERT_ANY_THROW(calculateStringSum("-1,1,-1"));
 
