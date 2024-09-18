@@ -1,1 +1,36 @@
-1. TestCase Name:
+Test Cases:
+
+1. Test Case Name: ReturnsZeroForEmptyInput
+Scenario: If the given input string is empty the sum is returned as 0
+Steps:
+Given " " as input, then "0" is expected.
+
+2. Test Case Name: ReturnsZeroForSingleZeroInput
+Scenario: If the given input string is a single 0, the returned sum is 0
+Steps:
+Given "0" as input, then "0" is expected.
+
+3. Test Case Name: ReturnsSumOfInputNumbersSeparatedByCommas
+Scenario: If the given input string is a list of numbers separated by commas, the numbers are added up and the sum is returned
+Steps:
+Given "1,2" as input, then "3" is expected.
+
+4. Test Case Name: ReturnsSumOfInputNumbersSeparatedByNewLines
+Scenario: 	If the given input string is a list of numbers separated by new line characters, the numbers are added up and the sum is returned
+Steps:
+Given "1\n2" as input, then "3" is expected.
+
+5. Test Case Name: ReturnsZeroIfInputStringDoesNotHaveNumbers
+Scenario: 	If there are no numbers in the input string, then the returned sum is 0 as there is nothing to add up
+Steps:
+Given "Hello, world!" as input, then "0" is expected.
+
+6. Test Case Name: IgnoresInputCharactersThatAreNeitherNumbersNorDelimiters
+Scenario: If the given input consists of characters that are neither numbers not delimiters (e.g., spaces), they are ignored
+Steps:
+Given "1, 2*1" as input, then "22" is expected.
+
+7. Test Case Name: ThrowsExceptionForNegativeInputNumbers
+Scenario: If the given input consists of negative numbers, an exception is thrown and all the negative numbers are shown in the exception message
+Steps:
+Given "1,1,-1" as input, then "negatives not supported: -1, -1" is expected.
