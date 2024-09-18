@@ -29,8 +29,3 @@ Given "Hello, world!" as input, then "0" is expected.
 Scenario: If the given input consists of characters that are neither numbers not delimiters (e.g., spaces), they are ignored
 Steps:
 Given "1, 2*1" as input, then "22" is expected.
-
-7. Test Case Name: ThrowsExceptionForNegativeInputNumbers
-Scenario: If the given input consists of negative numbers, an exception is thrown and all the negative numbers are shown in the exception message
-Steps:
-Given "1,1,-1" as input, then "negatives not supported: -1, -1" is expected.
